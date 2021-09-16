@@ -1,51 +1,24 @@
-# dgx-template-monorepo-spa
+# Swiper nx angular
 
-Template for a Nx based Monorepo SPA Project.
+Repo to reproduce error
 
-## Usage
+Run `npm i`
 
-1. Create `temp` directory and set as working directory.
-2. Run `npx create-nx-workspace <NxWorkSpaceName> --preset=angular --appName=component-development --cli=angular --style=scss --nx-cloud=no`
-3. Move all files/folders from the `temp/<NxWorkSpaceName>` folder to the root of the repo, overwriting any files.
-4. Set your working directory to root and delete `temp` directory.
-5. Edit `package.json`:
-   1. Set `license` to `"SEE LICENSE IN LICENSE"`
-6. Run `npm install @domgen/nx-angular --save-dev` to install the D&G Nx Angular Plugin.
-7. Apply D&G Nx Angular Schematic changes:
-   1. Run `npx nx generate @domgen/nx-angular:lint component-development`
-   2. Run `npx nx generate @domgen/nx-angular:jest component-development --setupFile=angular`
-8. Run `npm install @domgen/nx-aws-cache --save-dev` to install the D&G NX AWS Cache custom task runner.
-9. Edit `.prettierrc`:
-   1. Add `"endOfLine": "auto"`
-10. Edit `.prettierignore`:
-    1. Add `.context.json`.
-11. Edit '.gitignore':
-    1. Add `.reports` to misc section.
-12. Edit `nx.json`:
+Then from the NX vscode extension. Run `run-many` -> `test` -> `all` -> `true` and execute `nx run-many --target=test --all=true <`
 
-    1. Set `Affected.DefaultBase` to `develop`
-    2. Add the following to `tasksRunnerOptions`:
+View console for
 
-       ```json
-           "nx-aws-cache": {
-             "runner": "@domgen/nx-aws-cache",
-             "options": {
-               "cacheableOperations": [
-                 "build",
-                 "lint",
-                 "test",
-                 "e2e",
-                 "build-storybook"
-               ]
-             }
-           }
-       ```
+```
+SyntaxError: Cannot use import statement outside a module
 
-13. Edit `README.md`:
-    1. Add `![Build Status]({CodeBuildBadgeUrl})` replacing `{CodeBuildBadgeUrl}` with the CodeBuild build badge URL,
-       changing the `branch` parameter from `master` to `develop`.
-14. Run `npx nx format` to correctly format all the updated files.
+      1 | import { Component, ChangeDetectionStrategy } from '@angular/core';
+      2 | // import Swiper core and required modules
+    > 3 | import SwiperCore, { Virtual } from 'swiper';
+        | ^
+      4 |
+      5 | // install Swiper modules
+      6 | SwiperCore.use([Virtual]);
 
-###### Notes
-
-_CodeBuild Image: aws/codebuild/standard:4.0-21.08.20_
+      at Runtime.createScriptFromCode (../../../node_modules/jest-runtime/build/index.js:1350:14)
+      at Object.<anonymous> (src/lib/test-app-home/test-app-home.component.ts:3:1)
+```
