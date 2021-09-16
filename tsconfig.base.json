@@ -14,7 +14,12 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@test/test-app/feature-shell": [
+        "libs/test-app/feature-shell/src/index.ts"
+      ],
+      "@test/test-app/feature-home": ["libs/test-app/feature-home/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

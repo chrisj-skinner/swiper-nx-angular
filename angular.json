@@ -25,7 +25,8 @@
     "@nrwl/angular:library": {
       "style": "scss",
       "linter": "eslint",
-      "unitTestRunner": "jest"
+      "unitTestRunner": "jest",
+      "strict": true
     },
     "@nrwl/angular:component": {
       "style": "scss"
@@ -153,6 +154,68 @@
           "builder": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["apps/component-development-e2e/**/*.{js,ts}"]
+          }
+        }
+      }
+    },
+    "test-app-feature-shell": {
+      "projectType": "library",
+      "root": "libs/test-app/feature-shell",
+      "sourceRoot": "libs/test-app/feature-shell/src",
+      "prefix": "test",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/test-app/feature-shell/src/**/*.ts",
+              "libs/test-app/feature-shell/src/**/*.html"
+            ],
+            "format": "./eslintFormatter.js",
+            "outputFile": "reports/libs/test-app/feature-shell/eslint.json"
+          },
+          "outputs": ["reports/libs/test-app/feature-shell/eslint.json"]
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/libs/test-app/feature-shell",
+            "reports/libs/test-app/feature-shell"
+          ],
+          "options": {
+            "jestConfig": "libs/test-app/feature-shell/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "test-app-feature-home": {
+      "projectType": "library",
+      "root": "libs/test-app/feature-home",
+      "sourceRoot": "libs/test-app/feature-home/src",
+      "prefix": "test",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/test-app/feature-home/src/**/*.ts",
+              "libs/test-app/feature-home/src/**/*.html"
+            ],
+            "format": "./eslintFormatter.js",
+            "outputFile": "reports/libs/test-app/feature-home/eslint.json"
+          },
+          "outputs": ["reports/libs/test-app/feature-home/eslint.json"]
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/libs/test-app/feature-home",
+            "reports/libs/test-app/feature-home"
+          ],
+          "options": {
+            "jestConfig": "libs/test-app/feature-home/jest.config.js",
+            "passWithNoTests": true
           }
         }
       }

@@ -1,21 +1,14 @@
 {
   "implicitDependencies": {
-    "package.json": {
-      "dependencies": "*",
-      "devDependencies": "*"
-    },
+    "package.json": { "dependencies": "*", "devDependencies": "*" },
     ".eslintrc.json": "*"
   },
-  "affected": {
-    "defaultBase": "develop"
-  },
+  "affected": { "defaultBase": "develop" },
   "npmScope": "test",
   "tasksRunnerOptions": {
     "default": {
       "runner": "@nrwl/workspace/tasks-runners/default",
-      "options": {
-        "cacheableOperations": ["build", "lint", "test", "e2e"]
-      }
+      "options": { "cacheableOperations": ["build", "lint", "test", "e2e"] }
     },
     "nx-aws-cache": {
       "runner": "@domgen/nx-aws-cache",
@@ -31,12 +24,12 @@
     }
   },
   "projects": {
-    "component-development": {
-      "tags": []
-    },
+    "component-development": { "tags": [] },
     "component-development-e2e": {
       "tags": [],
       "implicitDependencies": ["component-development"]
-    }
+    },
+    "test-app-feature-shell": { "tags": ["scope: test-app", "type: feature"] },
+    "test-app-feature-home": { "tags": ["scope: test-app", "type: feature"] }
   }
 }

@@ -1,0 +1,6 @@
+<h1>home working</h1>
+<swiper [slidesPerView]="3" [spaceBetween]="50" [virtual]="true">
+  <ng-container *ngFor="let slide of slides; index as i">
+    <ng-template swiperSlide>Slide {{ slide }}</ng-template>
+  </ng-container>
+</swiper>
