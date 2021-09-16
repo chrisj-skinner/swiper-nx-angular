@@ -4,7 +4,7 @@ Repo to reproduce error
 
 Run `npm i`
 
-Then from the NX vscode extension. Run `run-many` -> `test` -> `all` -> `true` and execute `nx run-many --target=test --all=true <`
+Then from the NX console vscode extension (https://marketplace.visualstudio.com/items?itemName=nrwl.angular-console). Run `run-many` -> `test` -> `all` -> `true` and execute `nx run-many --target=test --all=true <`
 
 View console for
 
