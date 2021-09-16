@@ -1,0 +1,73 @@
+version: 0.2
+
+env:
+  shell: bash
+  variables:
+    CI: true
+    PIP_DISABLE_PIP_VERSION_CHECK: true
+    PIP_QUIET: true
+    NX_CACHE_AWS_BUCKET: dgx-codebuild-cache-eu-west-1-shared-services/dgx-template-monorepo-spa/nx-cache
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.8
+      nodejs: 12
+    commands:
+      - aws codeartifact login --tool pip --repository dgx-shared-pypi-repo --domain dgx-shared-codeartifact --domain-owner $ACCOUNT_ID
+      - pip install pipx==$PIPX_PACKAGE_VERSION
+      # Add pipx binaries to path
+      - export PATH="$PATH:/root/.local/bin"
+      - aws codeartifact login --tool npm --repository dgx-shared-npm-repo --domain dgx-shared-codeartifact --domain-owner $ACCOUNT_ID
+      - pipx install dgx-devops-pipeline-library==$PIPELINE_LIBRARY_PACKAGE_VERSION
+      - pipx install dgx-devops-deploy-library==$DEPLOY_LIBRARY_PACKAGE_VERSION
+  pre_build:
+    commands:
+      - dgx-pipeline build-init
+  build:
+    commands:
+      - dgx-pipeline build-notify --status started
+      - dgx-pipeline npm login --token $GITHUB_TOKEN
+      - npm ci
+
+      # Run Nx Affected Build
+      - dgx-pipeline nx gh
+        --github-app-id "$GITHUB_APP_ID"
+        --github-app-installation-id "$GITHUB_APP_INSTALLATION_ID"
+        --github-app-private-key "$GITHUB_APP_PRIVATE_KEY"
+        build
+        --github-owner "$GITHUB_OWNER"
+        --repository "$REPOSITORY_NAME"
+
+      # Store build artifact
+      - dgx-pipeline nx gh
+        --github-app-id "$GITHUB_APP_ID"
+        --github-app-installation-id "$GITHUB_APP_INSTALLATION_ID"
+        --github-app-private-key "$GITHUB_APP_PRIVATE_KEY"
+        store-artifact
+        --commit-id "$CODEBUILD_RESOLVED_SOURCE_VERSION"
+        --github-owner "$GITHUB_OWNER"
+        --repository "$REPOSITORY_NAME"
+        --control-dynamodb-table "$DYNAMODB_TABLE_NAME"
+
+      # Deploy Storybooks - Uses dgx-deploy CLI internally
+      - dgx-pipeline nx gh
+        --github-app-id "$GITHUB_APP_ID"
+        --github-app-installation-id "$GITHUB_APP_INSTALLATION_ID"
+        --github-app-private-key "$GITHUB_APP_PRIVATE_KEY"
+        spa deploy-storybook
+        --commit-id "$CODEBUILD_RESOLVED_SOURCE_VERSION"
+        --github-owner "$GITHUB_OWNER"
+        --repository "$REPOSITORY_NAME"
+
+      # NPM Publish libraries
+      - dgx-pipeline nx gh
+        --github-app-id "$GITHUB_APP_ID"
+        --github-app-installation-id "$GITHUB_APP_INSTALLATION_ID"
+        --github-app-private-key "$GITHUB_APP_PRIVATE_KEY"
+        npm publish
+        --github-owner "$GITHUB_OWNER"
+        --repository "$REPOSITORY_NAME"
+  post_build:
+    commands:
+      - dgx-pipeline build-notify --use-codebuild-env-var

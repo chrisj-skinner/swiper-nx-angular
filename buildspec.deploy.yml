@@ -1,0 +1,38 @@
+version: 0.2
+
+env:
+  shell: bash
+  variables:
+    CI: true
+    PIP_DISABLE_PIP_VERSION_CHECK: true
+    PIP_QUIET: true
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.8
+      nodejs: 12
+    commands:
+      - aws codeartifact login --tool pip --repository dgx-shared-pypi-repo --domain dgx-shared-codeartifact --domain-owner $SHARED_SERVICES_ACCOUNT_ID
+      - pip install pipx==$PIPX_PACKAGE_VERSION
+      # Add pipx binaries to path
+      - export PATH="$PATH:/root/.local/bin"
+      - aws codeartifact login --tool npm --repository dgx-shared-npm-repo --domain dgx-shared-codeartifact --domain-owner $SHARED_SERVICES_ACCOUNT_ID
+      - pipx install dgx-devops-deploy-library==$DEPLOY_LIBRARY_PACKAGE_VERSION
+  build:
+    commands:
+      - dgx-deploy deploy-notify --status started
+      - dgx-deploy spa replace-variables --mode $ENVIRONMENT_REPLACE_MODE --env $PROJECT_ENVIRONMENT --bundle-folder "./$SPA_ANGULAR_BUILD_CONFIG" --env-folder "./deployment"
+
+      # Deploy SPA to S3 Bucket
+      - dgx-deploy spa deploy
+        --bucket-name "$TARGET_BUCKET"
+        --cloudfront-distribution-id "$DISTRIBUTION_ID"
+        --bundle-folder .
+        --build-config "$SPA_ANGULAR_BUILD_CONFIG"
+        --region "$AWS_REGION"
+        --spa-base-url "$SPA_BASE_URL"
+
+  post_build:
+    commands:
+      - dgx-deploy deploy-notify --use-codebuild-env-var

@@ -1,0 +1,15 @@
+version: 0.2
+
+batch:
+  fast-fail: false
+  build-graph:
+    - identifier: analysis
+      buildspec: .devops/buildspec.analysis.yml
+    - identifier: tests
+      buildspec: .devops/buildspec.tests.yml
+    - identifier: ephemeralenv
+      buildspec: .devops/buildspec.ephemeralenv.yml
+    - identifier: storybook
+      buildspec: .devops/buildspec.storybook.yml
+    - identifier: publish
+      buildspec: .devops/buildspec.publish.yml

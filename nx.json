@@ -1,0 +1,42 @@
+{
+  "implicitDependencies": {
+    "package.json": {
+      "dependencies": "*",
+      "devDependencies": "*"
+    },
+    ".eslintrc.json": "*"
+  },
+  "affected": {
+    "defaultBase": "develop"
+  },
+  "npmScope": "test",
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "@nrwl/workspace/tasks-runners/default",
+      "options": {
+        "cacheableOperations": ["build", "lint", "test", "e2e"]
+      }
+    },
+    "nx-aws-cache": {
+      "runner": "@domgen/nx-aws-cache",
+      "options": {
+        "cacheableOperations": [
+          "build",
+          "lint",
+          "test",
+          "e2e",
+          "build-storybook"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "component-development": {
+      "tags": []
+    },
+    "component-development-e2e": {
+      "tags": [],
+      "implicitDependencies": ["component-development"]
+    }
+  }
+}
